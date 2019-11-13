@@ -27,8 +27,9 @@ namespace Mirror{
         //[7] byte hasRed
         //[8] byte RedConfig
         public byte n_TileType;
-        public byte n_lowerTurf;
-        public byte n_upperTurf;
+
+        public byte[] n_turfBuffer;
+
         public bool n_hasDisposal;
         public byte n_disposalConfig;
         public bool n_hasBlue;
@@ -47,8 +48,9 @@ namespace Mirror{
             myTile = gameObject.GetComponent<Tile>();
             //Debug.Log(" GETTING TILE DATA" );
             this.n_TileType = (byte) myTile.TileDescriptor;
-            this.n_lowerTurf = (byte) myTile.turf.lowerState;
-            this.n_upperTurf = (byte) myTile.turf.upperState;
+            
+            this.n_turfBuffer = myTile.turf.GetNetworkData();
+
             this.n_hasDisposal = myTile.pipeManager.hasDisposal;
             this.n_disposalConfig = (byte)myTile.pipeManager.disposalConfig;
             this.n_hasBlue = myTile.pipeManager.hasBluePipe;
@@ -69,21 +71,16 @@ namespace Mirror{
             //Debug.Log("NETWORK UPDATE FINISHED");
         }
 
-        public void SetTurf(int lowerState = -1, int upperState = -1){
-            if(lowerState != -1){
-                n_lowerTurf = (byte) lowerState;
-            }
-            if(upperState != -1){
-                n_upperTurf = (byte) upperState;
-            }
+        public void SetTurf(byte[] turfData){
+            n_turfBuffer = turfData;
             // set dirtyBit Trigger 001<Tile>  010<Turf> 100<Pipe>
             SetDirtyBit(base.syncVarDirtyBits ^ 0b010);
         }
 
         public void UpdateTurf(){
-            myTile.turf.lowerState = this.n_lowerTurf;
-            myTile.turf.upperState = this.n_upperTurf;
-            myTile.turf.UpdateTurf();
+            //myTile.turf.lowerState = this.n_lowerTurf;
+            //myTile.turf.upperState = this.n_upperTurf;
+            myTile.turf.SetNetworkData(n_turfBuffer);
         }
 
         public void SetTile(Tile.TileTypes tileType){
@@ -150,8 +147,9 @@ namespace Mirror{
                 GetAllTileData();
                 //Debug.Log("SENDING INITIAL TILE-INFO: " + gameObject.name);
                 writer.Write(this.n_TileType);
-                writer.Write(this.n_lowerTurf);
-                writer.Write(this.n_upperTurf);
+                
+                writer.WriteBytesAndSize(this.n_turfBuffer);
+
                 writer.Write(this.n_hasDisposal);
                 writer.Write(this.n_disposalConfig);
                 writer.Write(this.n_hasBlue);
@@ -171,8 +169,7 @@ namespace Mirror{
                     }
                 }
                 if((base.syncVarDirtyBits & 0b010 ) != 0u){
-                    writer.Write(this.n_lowerTurf);
-                    writer.Write(this.n_upperTurf);
+                    writer.WriteBytesAndSize(this.n_turfBuffer);
                     if (isServer){
                         UpdateTurf();
                     }
@@ -197,8 +194,7 @@ namespace Mirror{
                  //This gets excecuted ONLY on CLIENT whenever a client connects for the first time to obtain the 'full' set of data
                 //Debug.Log("RECEIVING INITIAL TILE-INFO: " + gameObject.name);
                 this.n_TileType = reader.ReadByte();
-                this.n_lowerTurf = reader.ReadByte();
-                this.n_upperTurf = reader.ReadByte();
+                this.n_turfBuffer = reader.ReadBytesAndSize();
                 this.n_hasDisposal = reader.ReadBoolean();
                 this.n_disposalConfig = reader.ReadByte();
                 this.n_hasBlue = reader.ReadBoolean();
@@ -218,8 +214,7 @@ namespace Mirror{
                     UpdateTile();
                 }
                 if((receivedDirtyBits & 0b010 ) != 0u){
-                    this.n_lowerTurf = reader.ReadByte();
-                    this.n_upperTurf = reader.ReadByte();
+                    this.n_turfBuffer = reader.ReadBytesAndSize();
                     UpdateTurf();
                 }
                 if((receivedDirtyBits & 0b100 ) != 0u){

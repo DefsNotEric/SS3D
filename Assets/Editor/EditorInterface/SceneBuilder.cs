@@ -198,18 +198,18 @@ public class SceneBuilder : EditorWindow
                         GameObject new_obj = Instantiate(Resources.Load("empty_tile"), cell, Quaternion.identity, GameObject.Find("TileLoader").transform) as GameObject;
                         new_obj.GetComponent<Tile>().TileDescriptor = selectedTileType;
                         new_obj.GetComponent<Tile>().initTile();
-                        new_obj.GetComponent<Turf>().lowerState = lowerTurfStat;
-                        new_obj.GetComponent<Turf>().upperState = upperTurfStat;
-                        new_obj.GetComponent<Turf>().InitTurf();
+                        //new_obj.GetComponent<Turf>().lowerState = lowerTurfStat;
+                        //new_obj.GetComponent<Turf>().upperState = upperTurfStat;
+                        //new_obj.GetComponent<Turf>().InitTurf();
                         new_obj.name = string.Format("tile_{0}_{1}", cell.x, cell.z);
                         GameObject.Find("TileLoader").GetComponent<Tile_loader>().tile_list.Add(new_obj);
                     }else{
                         //updateTile
                         selectedTile.GetComponent<Tile>().TileDescriptor = selectedTileType;
                         selectedTile.GetComponent<Tile>().initTile();
-                        selectedTile.GetComponent<Turf>().lowerState = lowerTurfStat;
-                        selectedTile.GetComponent<Turf>().upperState = upperTurfStat;
-                        selectedTile.GetComponent<Turf>().InitTurf();
+                        //selectedTile.GetComponent<Turf>().lowerState = lowerTurfStat;
+                        //selectedTile.GetComponent<Turf>().upperState = upperTurfStat;
+                        //selectedTile.GetComponent<Turf>().InitTurf();
                     }
                 }else{
                     if (selectedTile != null) {

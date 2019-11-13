@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,11 +34,11 @@ public class Tile : MonoBehaviour
     public void initTile()
     {
         if (turf == null){
-            turf = (Turf) gameObject.AddComponent(typeof(Turf));
+            turf = (Turf) gameObject.AddComponent(typeof(StationLattice));
             //Debug.Log("Adding Component: turf"); 
         }
-        gameObject.GetComponent<Turf>().turfDescriptor = TileDescriptor;
-        gameObject.GetComponent<Turf>().InitTurf();
+        //gameObject.GetComponent<Turf>().turfDescriptor = TileDescriptor;
+        //gameObject.GetComponent<Turf>().InitTurf();
 
         if (contentManager == null){
             contentManager = (TileContentManager) gameObject.AddComponent(typeof(TileContentManager));
@@ -64,4 +65,16 @@ public class Tile : MonoBehaviour
         //this.contentManager.UpdateMultipart();
         //this.pipeManager.UpdatePipes();
     } 
+
+    public void ChangeTurf(Type turfType){
+        if(turf != null)
+        {
+            #if UNITY_EDITOR
+            DestroyImmediate(turf);
+            #else
+            Destroy(turf);
+            #endif
+        }
+        turf = gameObject.AddComponent(turfType) as Turf;
+    }
 }

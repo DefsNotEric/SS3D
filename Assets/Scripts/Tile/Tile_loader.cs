@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -66,17 +67,41 @@ public class Tile_loader : NetworkBehaviour
             //transparancy is nothing
         }
         GameObject new_obj = Instantiate(Resources.Load("empty_tile"), pos, Quaternion.identity, transform) as GameObject;
-  
+        Tile new_tile = new_obj.GetComponent<Tile>();
         if (pixelColor == Color.black){
-            new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_tile;
+            //new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_tile;
+            new_tile.ChangeTurf(typeof(StationLattice));
+            StationLattice new_turf = (StationLattice) new_tile.turf;
+            new_turf.AddPlating();
+            new_turf.AddFloor();
         }else if (pixelColor == Color.blue){
-            new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall;
+            //new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall;
+            new_tile.ChangeTurf(typeof(StationLattice));
+            StationLattice new_turf = (StationLattice) new_tile.turf;
+            new_turf.AddPlating();
+            new_turf.AddWallGirder();
+            new_turf.UpgradeWall(StationLattice.StationWallTypes.regular);
         }else if (pixelColor == Color.red){
-            new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall_reinforced;
+            //new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall_reinforced;
+            new_tile.ChangeTurf(typeof(StationLattice));
+            StationLattice new_turf = (StationLattice) new_tile.turf;
+            new_turf.AddPlating();
+            new_turf.AddWallGirder();
+            new_turf.UpgradeWall(StationLattice.StationWallTypes.reinforced);
         }else if (pixelColor == Color.green){
-            new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall_glass;
+            //new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall_glass;
+            new_tile.ChangeTurf(typeof(StationLattice));
+            StationLattice new_turf = (StationLattice) new_tile.turf;
+            new_turf.AddPlating();
+            new_turf.AddWallGirder();
+            new_turf.UpgradeWall(StationLattice.StationWallTypes.glass);
         }else if (pixelColor == Color.magenta){
-            new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall_glass_reinforced;
+            //new_obj.GetComponent<Tile>().TileDescriptor = Tile.TileTypes.station_wall_glass_reinforced;
+            new_tile.ChangeTurf(typeof(StationLattice));
+            StationLattice new_turf = (StationLattice) new_tile.turf;
+            new_turf.AddPlating();
+            new_turf.AddWallGirder();
+            new_turf.UpgradeWall(StationLattice.StationWallTypes.glass_reinforced);
         }else{
             Debug.Log(pixelColor);
             return;

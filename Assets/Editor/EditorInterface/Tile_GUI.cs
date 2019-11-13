@@ -15,7 +15,10 @@ public class Tile_GUI : Editor
         {
             targetScript.initTile();
         }
-
+        if(GUILayout.Button("build_turf"))
+        {
+            targetScript.ChangeTurf(typeof(StationLattice));
+        }
         if(GUILayout.Button("build_disposal"))
         {
             targetScript.GetComponent<TilePipeManager>().BuildDisposal(-1);

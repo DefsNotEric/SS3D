@@ -35,16 +35,17 @@ public class MovementController : NetworkBehaviour
         int posX = (int)gameObject.transform.position.x;
         int posZ = (int)gameObject.transform.position.z;
 
-        GameObject selectedTile_obj = GameObject.Find(string.Format("tile_{0}_{1}",posX,posZ));
-        if (selectedTile_obj != null){
-            Tile selectedTile = selectedTile_obj.GetComponent<Tile>();
-            //Debug.Log(" +++++++++  CHANGING TILE DATA");
-            if(selectedTile.turf.upperState == 2){
-                selectedTile.tileNetworkManager.SetTurf(lowerState: 1, upperState: 0);
-            }else{
-                selectedTile.tileNetworkManager.SetTurf(lowerState: 2, upperState: 2);
+        if(isServer){
+            GameObject selectedTile_obj = GameObject.Find(string.Format("tile_{0}_{1}",posX,posZ));
+            if (selectedTile_obj != null){
+                Tile selectedTile = selectedTile_obj.GetComponent<Tile>();
+                if(((StationLattice) selectedTile.turf).hasFloorWall == 1){
+                    ((StationLattice) selectedTile.turf).RemoveFloor();
+                }else if(((StationLattice) selectedTile.turf).hasFloorWall == 0){
+                    ((StationLattice) selectedTile.turf).AddFloor();
+                }
+                selectedTile.tileNetworkManager.SetTurf(selectedTile.turf.GetNetworkData());
             }
-            //selectedTile.GetComponent<TileNetworkManager>().SetAllTileData(); //now LOCK IN that data;
         }
     }
 
