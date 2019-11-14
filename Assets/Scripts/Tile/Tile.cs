@@ -37,6 +37,7 @@ public class Tile : MonoBehaviour
             turf = (Turf) gameObject.AddComponent(typeof(StationLattice));
             //Debug.Log("Adding Component: turf"); 
         }
+        turf.UpdateTurf();
         //gameObject.GetComponent<Turf>().turfDescriptor = TileDescriptor;
         //gameObject.GetComponent<Turf>().InitTurf();
 
